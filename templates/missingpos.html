@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<canvas id="myCanvas" width="350" height="100" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<script type="text/javascript" src="{{ url_for('static', filename='dataman.js') }}"></script>
+<script>
+	document.body.onkeypress = function (event) {
+		 event = event || window.event;
+		 if (event.keyCode == 13) {
+			 document.getElementById("mySubmit").click(); 
+			 return false;
+		 }
+		 return true;
+	}
+	
+	function Verifier()
+	{
+		//Retrieves the value of the number just submitted
+		var player_value = Number (document.getElementById("MissingNumber").value);
+		if (player_value == result)
+		{
+			ctx.clearRect(0,0,350,100);
+			points = points + 1;
+			ctx.fillText("Correct. Points: " + points,10,30);
+		} else {
+			ctx.clearRect(0,0,350,100);
+			ctx.fillText("Not correct. Points: " + points,10,30);
+		}
+		
+		//One operation less to go
+		guesses = guesses -1;
+		
+		//If guesses > 0 show another operation
+		if (guesses > 0)
+		{
+			Operation = OperationSelector();
+			CurrentOp = GenNumbers (Operation);
+			co = CurrentOp.split(";");
+			num1 = co[0];
+			num2 = co[1];
+			num3 = co[2];
+			//What component not show
+			posic = Math.round(Math.random() * 3);
+			if (posic == 1)
+			{
+				displ = "[ ]" + " " + Operation + " " + num2 + " = " + num3;  
+				result = num1;
+			} else if (posic == 2) {
+				displ = num1 + " " + Operation + " " + "[ ]" + " = " + num3;  
+				result = num2;
+			} else {
+				displ = num1 + " " + Operation + " " + num2 + " = " + "[ ]"; 
+				result = num3;	
+			}
+			ctx.fillText(displ,10,65);
+			document.getElementById("MissingNumber").value="";
+		} else
+		{
+			ctx.clearRect(0,0,350,100);
+			ctx.fillText("Game over", 10,30);
+			ctx.fillText("Total points: " + points,10,65);
+			document.getElementById("MissingNumber").disabled=true;
+			document.getElementById("mySubmit").disabled=true;
+		}	
+	}
+
+//Game starts with zero points
+var points = 0;
+//Select the aritmethic operation + or -
+var Operation = OperationSelector();
+//Total number of ops in the game
+var guesses = 10;
+//Expected result
+var result = 0;
+//First operation
+var CurrentOp = GenNumbers (Operation);
+//Split the returned operation in its components
+var co = CurrentOp.split(";");
+var num1 = co[0];
+var num2 = co[1];
+var num3 = co[2];
+//What component not show
+var posic = Math.round(Math.random() * 3);
+if (posic == 1)
+{
+	displ = "[ ]" + " " + Operation + " " + num2 + " = " + num3;  
+	result = num1;
+} else if (posic == 2) {
+	displ = num1 + " " + Operation + " " + "[ ]" + " = " + num3;  
+	result = num2;
+} else {
+	displ = num1 + " " + Operation + " " + num2 + " = " + "[ ]"; 
+	result = num3;	
+}
+
+//Display the operation on the canvas
+var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+ctx.font="25px Arial";
+ctx.fillText(displ,10,50);
+
+</script>
+
+<p><h1>Missing Number</h1></p>
+
+<p>
+Missing number: <br>
+<input type="text" id="MissingNumber" autofocus><br>
+<button type="button" id="mySubmit" onclick= Verifier()> Submit</button><br>
+</p>
+<hr>
+<p>
+<h3>Instructions:</h3>Enter the missing number in the operation and get the best results over 10 ops. To play again or just restart the game press F5 to reload the page
+</p>
+{% endblock %}

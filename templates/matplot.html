@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<script>
+function validateForm() {
+    var x = document.forms["plotForm"]["xvalues"].value;
+    var y = document.forms["plotForm"]["yvalues"].value;
+    if (x == "" || y=="") {
+        alert("X and Y values must be filled out");
+        return false;
+    }
+}
+</script> 
+
+<form name="plotForm" action="/matplot" method="post" autocomplete="off" onsubmit="return validateForm()">
+  X values (format: value1, value2, ...):<br>
+  <input type="text" name="xvalues"><br>
+  Y values (format: value1, value2, ...):<br>
+  <input type="text" name="yvalues"><br>
+  X axis (format: Xmin, Xmax):<br>
+  <input type="text" name="xaxis"><br>
+  Y axis (format: Ymin, Ymax):<br>
+  <input type="text" name="yaxis"><br>
+  Select a line color:
+  <select name="color">
+    <option value="r">red</option>
+    <option value="g">green</option>
+    <option value="b">blue</option>
+    <option value="c">cyan</option>
+  </select><br><br>
+  <input type="submit" value="Submit"><br>
+</form> 
+
+
+ <img src="{{ url_for('static', filename=webimagepath) }}" alt="MatPlotLib figure" > 
+
+
+{% endblock %}

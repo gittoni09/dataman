@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block body %}
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<h1 style="margin:0">Number Guesser</h1>
+<div style="font-size:25px; margin-right:20px;">High Score: <span id="highScore">--</span></div>
+</div>
+<div id="number_display" style="display: flex; justify-content: center; align-items: center; font-size: 25px; margin: 20px;">
+    <span id="low">0</span>
+    <span style="margin: 0 10px;">[</span>
+    <input type="number" id="newNumber" autofocus style="width:80px; text-align:center; font-size:25px;">
+    <span style="margin: 0 10px;">]</span>
+    <span id="high">100</span>
+</div>
+<div style="text-align:center; margin-top: 10px; font-size: 25px">
+<button type="button" id="mySubmit" onclick="Verifier()" style="font-size:25px;">Submit</button>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='dataman.js') }}"></script>
+<script>
+var Nm = NumGen(100);
+var low = 0;
+var high = 100;
+var tries = 0;
+function updateDisplay() {
+    document.getElementById("low").innerText = low;
+    document.getElementById("high").innerText = high;
+}
+function Verifier() {
+    var inputElem = document.getElementById("newNumber");
+    var player_value = Number(inputElem.value);
+    if (inputElem.value === "") { return; }
+    if (player_value === Nm) {
+        tries++;
+        fetch('/highscore', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({tries: tries})
+        }).then(response => response.json())
+          .then(data => {
+              document.getElementById("highScore").innerText = data.highScore;
+          });
+        alert("You found it in " + tries + " guess(es)!");
+        inputElem.disabled = true;
+        document.getElementById("mySubmit").disabled = true;
+    } else if (player_value < Nm && player_value > low) {
+        tries++;
+        low = player_value;
+    } else if (player_value > Nm && player_value < high) {
+        tries++;
+        high = player_value;
+    }
+    updateDisplay();
+    inputElem.value = "";
+}
+fetch('/highscore')
+   .then(response => response.json())
+   .then(data => {
+       document.getElementById("highScore").innerText = data.highScore;
+   });
+updateDisplay();
+document.body.onkeypress = function (event) {
+    event = event || window.event;
+    if (event.keyCode == 13) {
+        document.getElementById("mySubmit").click();
+        return false;
+    }
+    return true;
+};
+</script>
+<div id="instructions_block">
+<hr>
+<div style="padding:10px;">
+    <h3>Instructions:</h3>
+    <p>Find out the secret number in as few guesses as possible. To play again or restart the game, click the Restart button.</p>
+    <button type="button" onclick="if(confirm('Are you sure you want to restart the game?')) {location.reload();}">Restart</button>
+</div>
+</div>
+{% endblock %}

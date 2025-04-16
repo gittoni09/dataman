@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1> Welcome! </h1>
+<div>
+Available applications:
+<br>
+<p>
+<table id="IndexTable">
+<tbody>
+<tr>
+ <th>
+  Utilities
+ </th>
+ <th>
+  Dataman games
+ </th>
+</tr>
+<tr>
+ <td>
+   <ul>
+	<li><a href="/c2f">Celsius to Farenheit</a></li>
+	<li><a href="/f2c">Farenheit to Celsius</a></li>
+	<li><a href="/matplot">Simple data plot (MatPlotLib)</a></li>
+   </ul>
+ </td>
+ <td>
+   <ul>
+	<li><a href="/guesser">Number guesser</a></li>
+	<li><a href="/missing">Calc the missing result</a></li>
+	<li><a href="/missingposition">[&nbsp;?&nbsp;]</a></li>
+	<li><a href="/wipeout">Wipe out</a></li>
+   </ul>
+
+ </td>
+</tr>
+</tbody>
+</table>
+</p>
+</div>
+<div>
+<p>
+<a href="http://gotoolset.appspot.com/">Go back to GoToolSet main page</a>
+</p>
+</div>
+{% endblock %}
